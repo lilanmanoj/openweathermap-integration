@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,6 +26,7 @@ class Temperature extends Model
     protected $appends = [
         'celsius',
         'fahrenheit',
+        'formatted_date',
     ];
 
     /**
@@ -49,5 +51,18 @@ class Temperature extends Model
         $value = ($this->temperature - self::FACTOR) * 9 / 5 + 32;
 
         return number_format($value);
+    }
+
+    /**
+     * Format created date.
+     *
+     * @return string
+     */
+    public function getFormattedDateAttribute()
+    {
+        $created = new Carbon($this->created_at);
+        $formattedDate = $created->format('D, j F Y, h:i a');
+
+        return $formattedDate;
     }
 }
