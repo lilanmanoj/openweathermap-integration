@@ -24,6 +24,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
+Route::group(['middleware' => ['auth:sanctum', 'verified'], 'namespace' => 'App\Http\Controllers'], function () {
+    Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+});
