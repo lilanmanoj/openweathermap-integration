@@ -1,64 +1,45 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# overview
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+The task is to implement a small webapp that will store the current temperature of two cities when a user logs in, and display a historical list of the users login temperatures.
 
-## About Laravel
+Current temperature fetch using OpenWeatherMap API.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Requirements
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP >= 7.3
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- MySQL or SQLite
 
-## Learning Laravel
+- All other requirements need to be satisfied can be found [here]: https://laravel.com/docs/8.x/deployment#server-requirements 
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Used Libraries/Tech
 
-## Laravel Sponsors
+- Laravel 8
+- Jetstream [Inertia + Vue]  - This was used as a starter kit for scaffold the application
+- Fortify - Headless authentication  backend for laravel defaultly comes with Jetstream
+- Tailwind CSS - CSS styling library comes with Jetstream
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Approach
 
-### Premium Partners
+1. Pre-defined cities and OpenWeatherMap (OWM) API key was configured in config/weathermap.php (Also API key can be able to update via .env file)
+2. Helper class created to fetch and process weather data and to get temperature etc from OWM. (can be found in app/Helpers/OpenWeatherMap.php)
+3. Using the helper class, created a console command to fetch and store current temperature of pre-defined cities against user.
+4. Reason to create a console command was, not only for test the functionality easily but also in future (if data fetching consumes much time) console command can be easily scheduled to run in background when sign-in the user (`php artisan log:temperature {user_id} {city_id?*}`)
+5. Fortify authentication pipeline was extended to run above console command programmatically, when everytime a user sign-in, and just after a successful sign-in to get and store current temperature logs.
+6. When user logged-in he/she redirected to dashboard, thus dashboard view was modified with tables, in order to display logged-in user's historical temperature logs within dashboard
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[CMS Max](https://www.cmsmax.com/)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
+## Instructions
 
-## Contributing
+1. Clone, fetch or download the code from repository
+2. cd into directory
+3. run `composer install`
+4. run `npm install && npm run dev`
+5. `cp .env.example .env`
+6. `php artisan key:generate`
+7. Update .env with appropriate database configurations (SQLite or MySQL)
+8. Update `OPENWEATHERMAP_API_KEY` parameter at the bottom of .env
+9. `php artisan migrate`
+10. `php artisan serve`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+That's it. Have fun!
